@@ -1,0 +1,10 @@
+FROM qwen2.5:3b
+
+# Jetson Orin Nano tuning: the iGPU shares system RAM. Full-GPU offload of
+# qwen2.5:3b OOMs (cudaMalloc failure), so pin a conservative GPU layer count
+# and context that fits alongside the OpenClaw gateway + desktop. Baking these
+# into the model means every caller (app.py AND the OpenClaw agent) loads the
+# SAME instance with identical params, so Ollama never reloads/thrashes and only
+# one copy is ever resident.
+PARAMETER num_gpu 8
+PARAMETER num_ctx 4096
